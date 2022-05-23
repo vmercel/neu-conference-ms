@@ -18,19 +18,12 @@ contract ConferenceMS
 		struct AttendanceRecord
 	{
 		int id;
-		string rowNum;
 		string userID;
 		string confID;
 		string sID;
-		string sStartTime;
 		string presenter;
 		string pTitle;
-		string sEndTime;
-		string roomNum;
 		string sDate;
-		string timeIn;
-		string timeOut;
-		string location;
 		string status;
 				
 	}
@@ -134,19 +127,12 @@ contract ConferenceMS
 
 
 	function addAttendanceRecord(
-		string memory _rowNum,
 		string memory _userID,
 		string memory _confID,
 		string memory _sID,
-		string memory _sStartTime,
 		string memory _presenter,
 		string memory _pTitle,
-		string memory _sEndTime,
-		string memory _roomNum,
 		string memory _sDate,
-		string memory _timeIn,
-		string memory _timeOut,
-		string memory _location,
 		string memory _status
 						) public onlyOwner
 	{
@@ -155,7 +141,7 @@ contract ConferenceMS
 
 		// Fetch the conference session details
 		// with the help of sCount
-		attendanceRegister[aCount] = AttendanceRecord(aCount, _rowNum, _userID, _confID, _sID, _sStartTime, _presenter, _pTitle, _sEndTime, _roomNum, _sDate, _timeIn, _timeOut, _location, _status);
+		attendanceRegister[aCount] = AttendanceRecord(aCount, _userID, _confID, _sID, _presenter, _pTitle, _sDate, _status);
 	}
 
 	// Create a function to add bonus marks
