@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Web 3 Demo</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <script src='web3.min.js'></script>
+</head>
+
+<body>
+
+    Web 3 Demo
+    <br >
+    <button onclick="printCoolNumber();">Print Cool Number</button>
+    <button onclick="changeCoolNumber();">Change Cool Number</button>
+    <button onclick="addAPerson();">Add person</button>
+    <button onclick="showAPerson();">Show person</button>
+    <button onclick="showAllPersons();">Show All Persons</button>
+    <br /><br />
+    Status: <span id="status">Loading...</span>
+
+<div class="container">
+  <h3>All persons in DataBase</h3>
+  <p id="persons"> </p>
+
+</div>
+
+    <script type="text/javascript">
+        async function loadWeb3() {
+            if (window.ethereum) {
+                window.web3 = new Web3(window.ethereum);
+                window.ethereum.enable();
+            }
+        }
+
+        async function loadContract() {
+            return await new window.web3.eth.Contract([
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_firstName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_lastName",
+				"type": "string"
+			}
+		],
+		"name": "addPerson",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_coolNumber",
+				"type": "uint256"
+			}
+		],
+		"name": "setCoolNumber",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [],
+		"name": "coolNumber",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "people",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "_id",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_firstName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_lastName",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "peopleCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+], '0x9e2f2d63E0196F4db2A95D766A705E8cb9B97e71');
+        }
+
+        async function printCoolNumber() {
+            updateStatus('fetching Cool Number...');
+            const coolNumber = await window.contract.methods.coolNumber().call();
+            updateStatus(`coolNumber: ${coolNumber}`);
+        }
+
+        async function getCurrentAccount() {
+            const accounts = await window.web3.eth.getAccounts();
+            return accounts[0];r
+        }
+
+        async function changeCoolNumber() {
+            const value = Math.floor(Math.random() * 100);
+            updateStatus(`Updating coolNumber with ${value}`);
+            const account = await getCurrentAccount();
+            const coolNumber = await window.contract.methods.setCoolNumber(value).send({ from: account });
+            updateStatus('Updated.');
+        }
+
+//adding Person
+async function addAPerson() {
+    const value = (Math.random() + 1).toString(36).substring(7);
+    updateStatus(`Adding Person ${value}`);
+    const account = await getCurrentAccount();
+    const aPerson = await window.contract.methods.addPerson(value,value).send({ from: account });
+    updateStatus('Person Added.');
+}
+// show person
+async function showAPerson() {
+    updateStatus('fetching Person...');
+    const aPerson = await window.contract.methods.people([1]).call();
+    updateStatus(`Person is: ${aPerson[0] +" "+ aPerson[1]+ " "+ aPerson[2]}`);
+}
+
+//show all persons
+async function showAllPersons() {
+    const n = await window.contract.methods.peopleCount().call();
+    var kk="";
+    for(i = 1; i <= n; i++){
+        var aPerson = await window.contract.methods.people([i]).call();
+        kk += "<li>"+aPerson[0] +" "+ aPerson[1]+ " "+ aPerson[2]+"</li>"
+    }
+var ppl = document.getElementById('persons');
+ppl.innerHTML = kk;
+}
+
+        async function load() {
+            await loadWeb3();
+            window.contract = await loadContract();
+            updateStatus('Ready!');
+        }
+
+        function updateStatus(status) {
+            const statusEl = document.getElementById('status');
+            statusEl.innerHTML = status;
+            console.log(status);
+        }
+
+
+
+
+
+
+
+        async function showPerson() {
+            updateStatus('fetching Person...');
+            const aPerson = await window.contract.methods.people(0).call();
+            updateStatus(`Person: ${aPerson}`);
+        }
+
+        async function addPerson() {
+            const value = Mercel;
+            updateStatus(`Adding Person ${value}`);
+            const account = await getCurrentAccount();
+            const aPerson = await window.contract.methods.addPerson(value, value).send({ from: account });
+            updateStatus('Person Added.');
+        }
+
+
+
+
+
+
+        load();
+    </script>
+</body>
+
+</html>
